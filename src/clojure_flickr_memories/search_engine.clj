@@ -18,7 +18,8 @@
               :owner (:owner photo-attrs)
               :farm-id (:farm photo-attrs)
               :server-id (:server photo-attrs)
-              :title (:title photo-attrs)}))
+              :title (:title photo-attrs)
+              :description (first (:content (first (filter #(= (:tag %) :description) (:content (first photo-zipped-xml))))))}))
          photo-list)))
 
 (defn search-photos [user-id from-date to-date]
