@@ -1,4 +1,4 @@
-# clojure-flickr-memories
+# clj-flickr-memories
 
 This is a port of https://github.com/emanchado/Flickr-Memories,
 written mainly to learn a bit more Clojure, and to experiment a bit
@@ -13,8 +13,7 @@ this repo.
 
 ## Usage
 
-You can call clojure-flickr-memories from inside the repo directory
-like:
+You can call clj-flickr-memories from inside the repo directory like:
 
     lein run <Flickr-username> <date-from> <date-to>
 

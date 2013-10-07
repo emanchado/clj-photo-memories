@@ -1,5 +1,5 @@
-(ns clojure-flickr-memories.main
-  (:use [clojure-flickr-memories.search-engine :as search-engine])
+(ns clj-flickr-memories.main
+  (:use [clj-flickr-memories.flickr-client :as flickr-client])
   (:require [net.cgrand.enlive-html :as html])
   (:gen-class))
 
@@ -31,4 +31,4 @@
   and retrieves all the pictures taken by the given user between the
   given dates."
   [& args]
-  (println (apply str (mail-template (nth args 1) (nth args 2) (apply search-engine/search-photos (map #(nth args %) (range 3)))))))
+  (println (apply str (mail-template (nth args 1) (nth args 2) (apply flickr-client/search-photos (map #(nth args %) (range 3)))))))

@@ -1,6 +1,6 @@
-(ns clojure-flickr-memories.search-engine-test
+(ns clj-flickr-memories.flickr-client-test
   (:use clojure.test
-        clojure-flickr-memories.search-engine))
+        clj-flickr-memories.flickr-client))
 
 (deftest extract-information-from-search-results
   (testing "Extracts zero results from an empty search result"

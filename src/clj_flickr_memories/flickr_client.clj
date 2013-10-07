@@ -1,4 +1,4 @@
-(ns clojure-flickr-memories.search-engine
+(ns clj-flickr-memories.flickr-client
   (:require [clojure.zip :as zip]
             [clojure.xml :as xml]
             [clj-http.client :as http-client])
