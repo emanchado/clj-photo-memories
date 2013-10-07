@@ -57,3 +57,11 @@
                                                   :api_key api-key
                                                   :url full-url}})]
     (user-id-from-xml-result (:body response))))
+
+(defn photo-image-url [photo]
+  (str "http://farm" (:farm-id photo) ".static.flickr.com/"
+       (:server-id photo) "/"
+       (:id photo) "_" (:secret photo) ".jpg"))
+
+(defn photo-page-url [photo]
+  (str "http://www.flickr.com/photos/" (:owner photo) "/" (:id photo)))

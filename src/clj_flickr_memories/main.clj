@@ -1,5 +1,5 @@
 (ns clj-flickr-memories.main
-  (:use [clj-flickr-memories.flickr-client :as flickr-client])
+  (:use [clj-flickr-memories.flickr-client :as fc])
   (:require [net.cgrand.enlive-html :as html])
   (:gen-class))
 
@@ -13,25 +13,18 @@
   [:h1 :#year-from] (html/content date-from)
   [:div.photo] (html/clone-for [photo photos]
                                [:a] (html/set-attr :href
-                                                   (str "http://farm"
-                                                        (:farm-id photo)
-                                                        ".static.flickr.com/"
-                                                        (:server-id photo)
-                                                        "/"
-                                                        (:id photo)
-                                                        "_"
-                                                        (:secret photo)
-                                                        ".jpg"))
+                                                   (fc/photo-page-url photo))
                                [:img] (html/set-attr :alt (:title photo)
-                                                     :src (:title photo))
+                                                     :src (fc/photo-image-url photo))
                                [:div.description :em] (html/content (:description photo))))
 
 (defn -main
-  "Receives three parameters: Flickr userid, start date and end date,
+  "Receives three parameters: Flickr URL name, start date and end date,
   and retrieves all the pictures taken by the given user between the
   given dates."
   [& args]
-  (let [username (flickr-client/user-id-from-url-name (first args))
+  (let [username (fc/user-id-from-url-name (first args))
         date-from (second args)
-        date-to (nth args 2)]
-    (println (apply str (mail-template date-from date-to (flickr-client/search-photos username date-from date-to))))))
+        date-to (nth args 2)
+        photos (fc/search-photos username date-from date-to)]
+    (println (apply str (mail-template date-from date-to photos)))))
