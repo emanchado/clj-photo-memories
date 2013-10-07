@@ -1,0 +1,6 @@
+{:host "mail.example.com"
+ :port 25
+ :ssl false
+ :user "myuser"
+ :password "mypassword"
+ :from "clj-flickr-memories@example.com"}

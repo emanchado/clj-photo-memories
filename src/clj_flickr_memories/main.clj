@@ -1,30 +1,40 @@
 (ns clj-flickr-memories.main
-  (:use [clj-flickr-memories.flickr-client :as fc])
-  (:require [net.cgrand.enlive-html :as html])
+  (:require [clj-flickr-memories.flickr-client :as fc])
+  (:require [clj-flickr-memories.mail :as mail])
+  (:require [clj-flickr-memories.date :refer [find-this-week-in-past-year]])
+  (:require [clojure.edn :as edn])
+  (:require [guns.cli.optparse :refer [parse]])
+  (:import java.util.Date java.text.SimpleDateFormat)
   (:gen-class))
-
-(html/deftemplate mail-template "templates/mail.html"
-  [date-from date-to photos]
-  ; Figure out why the fuck this doesn't work with replace-vars
-  [:head :title] (html/content (str "Flickr pictures from " date-from
-                                    " to " date-to))
-  [:h1 :#date-from] (html/content date-from)
-  [:h1 :#date-to] (html/content date-to)
-  [:h1 :#year-from] (html/content date-from)
-  [:div.photo] (html/clone-for [photo photos]
-                               [:a] (html/set-attr :href
-                                                   (fc/photo-page-url photo))
-                               [:img] (html/set-attr :alt (:title photo)
-                                                     :src (fc/photo-image-url photo))
-                               [:div.description :em] (html/content (:description photo))))
 
 (defn -main
   "Receives three parameters: Flickr URL name, start date and end date,
   and retrieves all the pictures taken by the given user between the
   given dates."
   [& args]
-  (let [username (fc/user-id-from-url-name (first args))
-        date-from (second args)
-        date-to (nth args 2)
-        photos (fc/search-photos username date-from date-to)]
-    (println (apply str (mail-template date-from date-to photos)))))
+  (let [config (clojure.edn/read-string (slurp "config.edn"))
+        username (fc/user-id-from-url-name (first args))
+        raw-date-from (second args)
+        rfc3339-formatter (SimpleDateFormat. "yyyy-MM-dd")
+        reference-date (if (> (count args) 1)
+                         (.parse rfc3339-formatter raw-date-from)
+                         (Date.))]
+    (loop [years-back 1]
+      (let [[week-start week-end] (find-this-week-in-past-year reference-date
+                                                               years-back)
+            date-from-string (.format rfc3339-formatter week-start)
+            date-to-string (.format rfc3339-formatter week-end)
+            photos (fc/search-photos username date-from-string date-to-string)]
+        (if (> (count photos) 0)
+          (let [html-mail-text (apply str (mail/mail-template date-from-string
+                                                              date-to-string
+                                                              photos))]
+            (if (> (count args) 2)
+              (mail/send-mail (nth args 2)
+                              (str "Flickr memories for " date-from-string)
+                              html-mail-text
+                              config)
+              (println html-mail-text)))
+          (if (< years-back 5)
+            (recur (inc years-back))
+            (println "Giving up, can't find anything this week :-(")))))))
