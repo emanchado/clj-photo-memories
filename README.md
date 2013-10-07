@@ -15,7 +15,10 @@ this repo.
 
 You can call clj-flickr-memories from inside the repo directory like:
 
-    lein run <Flickr-username> <date-from> <date-to>
+    lein run <Flickr-URL-name> <date-from> <date-to>
+
+Where the Flickr URL name is the bit after `http://flickr.com/photos/`
+in your photo stream URL.
 
 
 ## License

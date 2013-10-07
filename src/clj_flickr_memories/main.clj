@@ -31,4 +31,7 @@
   and retrieves all the pictures taken by the given user between the
   given dates."
   [& args]
-  (println (apply str (mail-template (nth args 1) (nth args 2) (apply flickr-client/search-photos (map #(nth args %) (range 3)))))))
+  (let [username (flickr-client/user-id-from-url-name (first args))
+        date-from (second args)
+        date-to (nth args 2)]
+    (println (apply str (mail-template date-from date-to (flickr-client/search-photos username date-from date-to))))))

@@ -2,6 +2,8 @@
   (:use clojure.test
         clj-flickr-memories.flickr-client))
 
+(import '(java.lang IllegalArgumentException))
+
 (deftest extract-information-from-search-results
   (testing "Extracts zero results from an empty search result"
     (let [photo-list (photos-in-xml-result "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
@@ -35,3 +37,20 @@
       (is (= (:server-id photo-info) "4007"))
       (is (= (:title photo-info) "IMG_3407.JPG"))
       (is (= (:description photo-info) "Sand sculpture of John Lennon")))))
+
+
+(deftest extract-information-from-user-info-results
+  (testing "Throws an exception if the user wasn't found"
+    (is (thrown? IllegalArgumentException
+                 (user-id-from-xml-result "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
+<rsp stat=\"fail\">
+	<err code=\"1\" msg=\"User not found\" />
+</rsp>"))))
+
+  (testing "Returns the user id if found"
+    (is (= (user-id-from-xml-result "<?xml version=\"1.0\" encoding=\"utf-8\" ?>
+<rsp stat=\"ok\">
+<user id=\"24881879@N00\">
+	<username>Esteban Manchado</username>
+</user>
+</rsp>")))))
