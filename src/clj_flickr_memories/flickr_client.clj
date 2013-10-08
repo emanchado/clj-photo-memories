@@ -6,6 +6,7 @@
 
 (def ^:dynamic *api-key* "30c195ccce757cd281132f0bef44de0d")
 (def ^:dynamic *base-url* "http://api.flickr.com/services/rest")
+(def ^:dynamic *static-domain* "static.flickr.com")
 
 (defn photos-in-xml-result [xml]
   (let [java-stream (java.io.ByteArrayInputStream. (.getBytes xml))
@@ -59,7 +60,7 @@
     (user-id-from-xml-result (:body response))))
 
 (defn photo-image-url [photo]
-  (str "http://farm" (:farm-id photo) ".static.flickr.com/"
+  (str "http://farm" (:farm-id photo) "." *static-domain* "/"
        (:server-id photo) "/"
        (:id photo) "_" (:secret photo) ".jpg"))
 
