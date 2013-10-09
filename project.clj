@@ -7,5 +7,6 @@
                  [org.clojure/clojure-contrib "1.2.0"]
                  [clj-http "0.7.7"]
                  [enlive "1.1.4"]
-                 [javax.mail/mail "1.4.3"]]
+                 [javax.mail/mail "1.4.3"]
+                 [guns.cli/optparse "1.1.1"]]
   :main clj-flickr-memories.main)
