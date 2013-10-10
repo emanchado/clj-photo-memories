@@ -1,0 +1,8 @@
+{
+    "name": "flickr-api-fake-server"
+  , "version": "0.0.1"
+  , "dependencies": {
+      "elementtree": ">= 0.1.5"
+    , "robohydra": ">= 0.3.0"
+  }
+}

@@ -37,6 +37,34 @@ results. If not, it will go one more year back in time, until it finds
 images or until it gives up after 5 years.
 
 
+## Testing
+
+You can run the unit tests with lein, by typing:
+
+    lein test
+
+There's also a [RoboHydra](http://robohydra.org)-based fake Flickr API
+server in the `robohydra/` folder. To use it, you'll need to:
+
+1. Make a DNS alias (eg. in `/etc/hosts` if you use Linux)
+`farm1.localhost` to point to your own machine.
+2. Start the fake Flickr API server with the command
+`./node_modules/.bin/robohydra robohydra/flickr-api.conf`.
+3. Run `clj-flickr-memories` with the `-s` and `-u` flags like so:
+`lein run -u http://localhost:3000/services/rest -s
+localhost:3000/static <flickr-user>`
+
+By default the server will return zero results when searching for
+photos, but you can check
+http://localhost:3000/robohydra-admin/scenarios and activate whatever
+scenarios are available to see how clj-flickr-memories reacts to
+different server responses.
+
+The different scenarios are in
+`robohydra/plugins/flickr-api/index.js`, and the static files are in
+`robohydra/static`.
+
+
 ## License
 
 Copyright © 2013 Esteban Manchado Velázquez
