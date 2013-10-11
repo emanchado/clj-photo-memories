@@ -1,14 +1,16 @@
 var heads                   = require("robohydra").heads,
+    RoboHydraHead           = heads.RoboHydraHead,
+    RoboHydraHeadStatic     = heads.RoboHydraHeadStatic,
     RoboHydraHeadFilesystem = heads.RoboHydraHeadFilesystem;
-var flickrHeads = require("./flickr-heads");
+var u = require("./utils");
 
 
 exports.getBodyParts = function() {
     return {
         heads: [
-            new flickrHeads.RoboHydraHeadFlickrApi({
+            u.onlyForMethod('urls.lookupUser', new RoboHydraHead({
                 name: 'urls.lookupUser',
-                method: 'flickr.urls.lookupUser',
+                path: '/services/rest/?',
                 handler: function(req, res) {
                     var userUrl = req.queryParams.url || req.bodyParams.url;
                     var urlName = userUrl.replace(/\/$/, '').
@@ -26,12 +28,13 @@ exports.getBodyParts = function() {
                     res.write('</user>\n</rsp>');
                     res.end();
                 }
-            }),
+            })),
 
-            new flickrHeads.RoboHydraHeadPhotoSearch({
+            u.onlyForMethod('photos.search', new RoboHydraHeadStatic({
                 name: 'photos.search.empty',
-                photos: []
-            }),
+                path: '/services/rest/?',
+                content: u.xmlForPhotos([])
+            })),
 
             new RoboHydraHeadFilesystem({
                 name: 'static.flickr.com',
@@ -43,9 +46,10 @@ exports.getBodyParts = function() {
         scenarios: {
             oneSearchResult: {
                 heads: [
-                    new flickrHeads.RoboHydraHeadPhotoSearch({
+                    u.onlyForMethod('photos.search', new RoboHydraHeadStatic({
                         name: 'photos.search.one',
-                        photos: [
+                        path: '/services/rest/?',
+                        content: u.xmlForPhotos([
                             {id: '6837662941',
                              owner: '24881879@N00',
                              secret: '24315d29c1',
@@ -58,8 +62,8 @@ exports.getBodyParts = function() {
                              description: "Arriving in Tau (close to Stavanger) to take the bus to start the hike to Preikestolen (the Pulpit Rock) in Rogaland, Norway."},
                             {id: 'foobar',
                              description: "Believe it or not, it worked!"}
-                        ]
-                    })
+                        ])
+                    }))
                 ]
             }
         }
