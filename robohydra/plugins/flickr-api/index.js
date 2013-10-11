@@ -56,6 +56,98 @@ exports.getBodyParts = function() {
                         ])
                     }))
                 ]
+            },
+
+            resultsFiveYearsAgo: {
+                instructions: u.instructions("Should find two results"),
+
+                heads: [
+                    u.onlyForMethod('photos.search', new RoboHydraHeadStatic({
+                        path: '/services/rest/?',
+                        responses: [
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([
+                                {id: '6837662941',
+                                 owner: '24881879@N00',
+                                 secret: '24315d29c1',
+                                 server: '7174',
+                                 farm: '1',
+                                 title: 'IMG_5539.JPG',
+                                 ispublic: '1',
+                                 isfriend: '0',
+                                 isfamily: '0',
+                                 description: "Arriving in Tau (close to Stavanger) to take the bus to start the hike to Preikestolen (the Pulpit Rock) in Rogaland, Norway."},
+                                {id: 'foobar',
+                                 description: "Believe it or not, it worked!"}
+                            ])}
+                        ]
+                    }))
+                ]
+            },
+
+            tooOldResults: {
+                instructions: u.instructions("The result should be that there aren't any photos available."),
+
+                heads: [
+                    u.onlyForMethod('photos.search', new RoboHydraHeadStatic({
+                        path: '/services/rest/?',
+                        responses: [
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([
+                                {id: '6837662941',
+                                 owner: '24881879@N00',
+                                 secret: '24315d29c1',
+                                 server: '7174',
+                                 farm: '1',
+                                 title: 'IMG_5539.JPG',
+                                 ispublic: '1',
+                                 isfriend: '0',
+                                 isfamily: '0',
+                                 description: "Arriving in Tau (close to Stavanger) to take the bus to start the hike to Preikestolen (the Pulpit Rock) in Rogaland, Norway."},
+                                {id: 'foobar',
+                                 description: "Believe it or not, it worked!"}
+                            ])}
+                        ]
+                    }))
+                ]
+            },
+
+            errorInTheMiddle: {
+                instructions: u.instructions("Should find two results"),
+
+                heads: [
+                    u.onlyForMethod('photos.search', new RoboHydraHeadStatic({
+                        path: '/services/rest/?',
+                        responses: [
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([])},
+                            {content: 'Internal Server Error',
+                             statusCode: 500},
+                            {content: u.xmlForPhotos([])},
+                            {content: u.xmlForPhotos([
+                                {id: '6837662941',
+                                 owner: '24881879@N00',
+                                 secret: '24315d29c1',
+                                 server: '7174',
+                                 farm: '1',
+                                 title: 'IMG_5539.JPG',
+                                 ispublic: '1',
+                                 isfriend: '0',
+                                 isfamily: '0',
+                                 description: "Arriving in Tau (close to Stavanger) to take the bus to start the hike to Preikestolen (the Pulpit Rock) in Rogaland, Norway."},
+                                {id: 'foobar',
+                                 description: "Believe it or not, it worked!"}
+                            ])}
+                        ]
+                    }))
+                ]
             }
         }
     };
