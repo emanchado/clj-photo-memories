@@ -26,14 +26,18 @@
 (defn search-photos [user-id from-date to-date & {:keys [base-url api-key]
                                                   :or {base-url *base-url*
                                                        api-key *api-key*}}]
-  (let [response (http-client/get base-url
-                                  {:query-params {:method "flickr.photos.search"
-                                                  :api_key api-key
-                                                  :extras "description"
-                                                  :user_id user-id
-                                                  :min_taken_date from-date
-                                                  :max_taken_date to-date}})]
-    (photos-in-xml-result (:body response))))
+  (try
+    (let [response (http-client/get base-url
+                                    {:query-params {:method "flickr.photos.search"
+                                                    :api_key api-key
+                                                    :extras "description"
+                                                    :user_id user-id
+                                                    :min_taken_date from-date
+                                                    :max_taken_date to-date}})]
+      (photos-in-xml-result (:body response)))
+    (catch Exception e
+      (println (str "Couldn't get photos from the Flickr server for " from-date "-" to-date))
+      ())))
 
 (defn user-id-from-xml-result [xml]
   (let [java-stream (java.io.ByteArrayInputStream. (.getBytes xml))
