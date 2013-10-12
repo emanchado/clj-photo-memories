@@ -69,3 +69,10 @@ exports.xmlForPhotos = function(photos) {
     var etree = new et.ElementTree(rspElem);
     return etree.write();
 };
+
+exports.instructions = function(expectedResult) {
+    return "Call clj-flickr-memories like " +
+        "`lein run foo -u http://localhost:3000/services/rest " +
+        "-s localhost:3000/static`.\n\n" +
+        expectedResult;
+};
