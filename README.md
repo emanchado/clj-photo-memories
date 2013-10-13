@@ -18,6 +18,7 @@ Once you have the code, you'll have to copy `config.edn-sample` to
 
 You can call clj-flickr-memories from inside the repo directory like:
 
+    lein run <Flickr-URL-name>
     lein run <Flickr-URL-name> <reference-date>
     lein run <Flickr-URL-name> <reference-date> <email-address>
 
