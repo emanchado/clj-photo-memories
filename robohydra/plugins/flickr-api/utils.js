@@ -1,6 +1,3 @@
-var robohydra               = require("robohydra"),
-    heads                   = robohydra.heads,
-    RoboHydraHead           = heads.RoboHydraHead;
 var et = require('elementtree');
 
 var defaultAttributes = {
