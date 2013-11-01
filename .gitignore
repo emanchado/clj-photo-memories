@@ -11,3 +11,4 @@ pom.xml
 config.edn
 node_modules
 robohydra.log
+*.pyc
