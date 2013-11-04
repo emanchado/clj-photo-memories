@@ -81,7 +81,7 @@ class SimpleTestCase(unittest.TestCase):
                     time.sleep(increment)
                     counter += increment
                     if counter > 5:
-                        break
+                        raise RuntimeError("Could not start mock server")
                 else:
                     break
 
