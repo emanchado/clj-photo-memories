@@ -100,8 +100,8 @@ class SimpleTestCase(unittest.TestCase):
         with scenario_output("flickr-api", "resultsFiveYearsAgo") as output:
             self.assertEqual(len(get_photos(output)), 2)
 
-    def test_tooOldResults(self):
-        with scenario_output("flickr-api", "tooOldResults") as output:
+    def test_tryAtMostFiveTimes(self):
+        with scenario_output("flickr-api", "tryAtMostFiveTimes") as output:
             self.assertEqual(len(get_photos(output)), 0)
 
     def test_errorInTheMiddle(self):

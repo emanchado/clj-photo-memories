@@ -81,7 +81,7 @@ exports.getBodyParts = function() {
                 ]
             },
 
-            tooOldResults: {
+            tryAtMostFiveTimes: {
                 instructions: u.instructions("The result should be that there aren't any photos available."),
 
                 heads: [
