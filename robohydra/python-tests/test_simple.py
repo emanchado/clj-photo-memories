@@ -13,17 +13,19 @@ ROBOHYDRA_HOSTNAME = "localhost"
 ROBOHYDRA_PORT = "3001"
 ROBOHYDRA_BASE_URL = "%s:%s" % (ROBOHYDRA_HOSTNAME, ROBOHYDRA_PORT)
 ROBOHYDRA_FLICKR_USER = "foo"
-CFM_COMMAND = "lein run %s -u %s%s/services/rest -s %s/static" % (
+CFM_COMMAND = "lein run %s -u %s%s/services/rest -s %s/static %s" % (
     ROBOHYDRA_FLICKR_USER,
     ROBOHYDRA_PROTOCOL,
     ROBOHYDRA_BASE_URL,
-    ROBOHYDRA_BASE_URL)
+    ROBOHYDRA_BASE_URL,
+    "%s")
 
 
 class scenario_output(object):
-    def __init__(self, plugin_name, scenario_name):
+    def __init__(self, plugin_name, scenario_name, extra_params=""):
         self.plugin_name = plugin_name
         self.scenario_name = scenario_name
+        self.extra_params = extra_params
         self.scenario_url = \
             "%s%s/robohydra-admin/rest/plugins/%s/scenarios/%s" % (
                 ROBOHYDRA_PROTOCOL, ROBOHYDRA_BASE_URL,
@@ -38,7 +40,8 @@ class scenario_output(object):
                 "Could not start scenario %s in plugin %s, response was %s" % (
                     self.scenario_name, self.plugin_name, resp))
 
-        return subprocess.check_output(CFM_COMMAND, shell=True)
+        return subprocess.check_output(CFM_COMMAND % self.extra_params,
+                                       shell=True)
 
     def __exit__(self, type, value, traceback):
         h = httplib2.Http()
