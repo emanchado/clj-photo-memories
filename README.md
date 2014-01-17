@@ -45,23 +45,20 @@ You can run the unit tests with lein, by typing:
     lein test
 
 There's also a [RoboHydra](http://robohydra.org)-based fake Flickr API
-server in the `robohydra/` folder. To use it, you'll need to:
+server in the `robohydra/` folder. To use it, you'll need to make a
+DNS alias (eg. in `/etc/hosts` if you use Linux) `farm1.localhost` to
+point to your own machine. Then you can run the tests with
+`./robohydra/run-tests.sh`.
 
-1. Make a DNS alias (eg. in `/etc/hosts` if you use Linux)
-`farm1.localhost` to point to your own machine.
-2. Start the fake Flickr API server with the command
-`./node_modules/.bin/robohydra robohydra/flickr-api.conf`.
-3. Run `clj-flickr-memories` with the `-s` and `-u` flags like so:
-`lein run -u http://localhost:3000/services/rest -s
-localhost:3000/static <flickr-user>`
+If you want to run the tests by hand, you'll have to start the fake
+Flickr API server with the command `./node_modules/.bin/robohydra
+robohydra/flickr-api.conf`, choose a scenario (see
+http://localhost:3000/robohydra-admin/scenarios for the list) and then
+run `clj-flickr-memories` with the `-s` and `-u` flags like so: `lein
+run -u http://localhost:3000/services/rest -s localhost:3000/static
+<flickr-user>`.
 
-By default the server will return zero results when searching for
-photos, but you can check
-http://localhost:3000/robohydra-admin/scenarios and activate whatever
-scenarios are available to see how clj-flickr-memories reacts to
-different server responses.
-
-The different scenarios are in
+The scenarios are implemented in
 `robohydra/plugins/flickr-api/index.js`, and the static files are in
 `robohydra/static`.
 
