@@ -107,3 +107,8 @@ class SimpleTestCase(unittest.TestCase):
     def test_errorInTheMiddle(self):
         with scenario_output("flickr-api", "errorInTheMiddle") as output:
             self.assertEqual(len(get_photos(output)), 2)
+
+    def test_olderYearsFirst(self):
+        with scenario_output("flickr-api", "olderYearsFirst",
+                             extra_params="2014-01-17") as output:
+            self.assertEqual(len(get_photos(output)), 1)

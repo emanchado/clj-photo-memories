@@ -47,7 +47,7 @@
             reference-date (if (> (count rest-args) 1)
                              (.parse rfc3339-formatter raw-date-from)
                              (Date.))]
-        (loop [years-back 1]
+        (loop [years-back 5]
           (let [[week-start week-end] (find-this-week-in-past-year reference-date
                                                                    years-back)
                 date-from-string (.format rfc3339-formatter week-start)
@@ -63,6 +63,6 @@
                                   html-mail-text
                                   config)
                   (println html-mail-text)))
-              (if (< years-back 5)
-                (recur (inc years-back))
+              (if (> years-back 1)
+                (recur (dec years-back))
                 (println "Giving up, can't find anything this week :-(")))))))))

@@ -127,6 +127,28 @@ exports.getBodyParts = function() {
                         ]
                     }))
                 ]
+            },
+
+            olderYearsFirst: {
+                instructions: u.instructions("Should find one result"),
+
+                heads: [
+                    u.onlyForMethod('photos.search', new RoboHydraHead({
+                        path: '/services/rest/?',
+                        handler: function(req, res) {
+                            var actualDate = req.queryParams.min_taken_date,
+                                expectedDate = "2009-01-12";
+                            if (actualDate === expectedDate) {
+                                res.send(u.xmlForPhotos([{/* default */}]));
+                            } else {
+                                res.send(u.xmlForPhotos([
+                                    {title: "First min date was " + actualDate},
+                                    {title: "Should have been " + expectedDate}
+                                ]));
+                            }
+                        }
+                    }))
+                ]
             }
         }
     };
