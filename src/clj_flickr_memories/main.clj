@@ -53,10 +53,10 @@
                 date-from-string (.format rfc3339-formatter week-start)
                 date-to-string (.format rfc3339-formatter week-end)
                 photos (fc/search-photos username date-from-string date-to-string)]
-            (if (> (count photos) 0)
-              (let [html-mail-text (apply str (mail/mail-template date-from-string
-                                                                  date-to-string
-                                                                  photos))]
+            (if (pos? (count photos))
+              (let [html-mail-text (clojure.string/join (mail/mail-template date-from-string
+                                                                            date-to-string
+                                                                            photos))]
                 (if (> (count rest-args) 2)
                   (mail/send-mail (nth rest-args 2)
                                   (str "Flickr memories for " date-from-string)
