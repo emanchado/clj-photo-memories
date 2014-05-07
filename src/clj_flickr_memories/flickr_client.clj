@@ -5,7 +5,7 @@
   (:use clojure.contrib.zip-filter.xml))
 
 (def ^:dynamic *api-key* "30c195ccce757cd281132f0bef44de0d")
-(def ^:dynamic *base-url* "http://api.flickr.com/services/rest")
+(def ^:dynamic *base-url* "https://api.flickr.com/services/rest")
 (def ^:dynamic *static-domain* "static.flickr.com")
 
 (defn photos-in-xml-result [xml]

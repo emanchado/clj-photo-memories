@@ -10,7 +10,7 @@
 
 (def options
   [["-u" "--base-url URL" "Base URL for the Flickr API"
-    :default "http://api.flickr.com/services/rest"
+    :default "https://api.flickr.com/services/rest"
     :assert [#(URL. %) "%s is not a valid URL"]
     ]
    ["-s" "--static-domain SUBDOMAIN" "Subdomain (after 'farm<N>') for image file URLs"
