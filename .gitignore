@@ -12,3 +12,4 @@ config.edn
 node_modules
 robohydra.log
 *.pyc
+.lein-repl-history
