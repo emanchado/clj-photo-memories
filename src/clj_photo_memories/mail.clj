@@ -1,5 +1,5 @@
-(ns clj-flickr-memories.mail
-  (:require [clj-flickr-memories.flickr-client :as fc])
+(ns clj-photo-memories.mail
+  (:require [clj-photo-memories.flickr-client :as fc])
   (:require [net.cgrand.enlive-html :as html]))
 
 

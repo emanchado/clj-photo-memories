@@ -1,4 +1,4 @@
-(ns clj-flickr-memories.date
+(ns clj-photo-memories.date
   (:import java.util.Calendar))
 
 (defn find-this-week-in-past-year [reference-date number-years-ago]

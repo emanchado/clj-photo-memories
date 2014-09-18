@@ -1,6 +1,6 @@
-(defproject clj-flickr-memories "0.1.0-SNAPSHOT"
-  :description "Small utility to fetch old pictures from a Flickr account"
-  :url "http://github.com/emanchado/clj-flickr-memories"
+(defproject clj-photo-memories "0.1.0-SNAPSHOT"
+  :description "Small utility to fetch old pictures from a Flickr/Trovebox account"
+  :url "http://github.com/emanchado/clj-photo-memories"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
@@ -9,4 +9,4 @@
                  [enlive "1.1.4"]
                  [javax.mail/mail "1.4.3"]
                  [guns.cli/optparse "1.1.1"]]
-  :main clj-flickr-memories.main)
+  :main clj-photo-memories.main)

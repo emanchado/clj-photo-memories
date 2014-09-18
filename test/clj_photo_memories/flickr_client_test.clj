@@ -1,6 +1,6 @@
-(ns clj-flickr-memories.flickr-client-test
+(ns clj-photo-memories.flickr-client-test
   (:use clojure.test
-        clj-flickr-memories.flickr-client))
+        clj-photo-memories.flickr-client))
 
 (import '(java.lang IllegalArgumentException))
 

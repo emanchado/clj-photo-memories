@@ -1,7 +1,7 @@
-(ns clj-flickr-memories.main
-  (:require [clj-flickr-memories.flickr-client :as fc])
-  (:require [clj-flickr-memories.mail :as mail])
-  (:require [clj-flickr-memories.date :refer [find-this-week-in-past-year]])
+(ns clj-photo-memories.main
+  (:require [clj-photo-memories.flickr-client :as fc])
+  (:require [clj-photo-memories.mail :as mail])
+  (:require [clj-photo-memories.date :refer [find-this-week-in-past-year]])
   (:require [clojure.edn :as edn])
   (:require [guns.cli.optparse :refer [parse]])
   (:import java.util.Date java.text.SimpleDateFormat)
@@ -9,11 +9,14 @@
   (:gen-class))
 
 (def options
-  [["-u" "--base-url URL" "Base URL for the Flickr API"
+  [["-u" "--base-url URL" "Base URL for the server API"
     :default "https://api.flickr.com/services/rest"
     :assert [#(URL. %) "%s is not a valid URL"]
     ]
-   ["-s" "--static-domain SUBDOMAIN" "Subdomain (after 'farm<N>') for image file URLs"
+   ["-s" "--static-domain SUBDOMAIN" "Subdomain (after 'farm<N>') for image file URLs. Flickr-only."
+    :default "static.flickr.com"
+    ]
+   ["-t" "--type TYPE" "Type of API (can be 'flickr' or 'trovebox')"
     :default "static.flickr.com"
     ]])
 
@@ -33,7 +36,7 @@
       (System/exit 1))))
 
 (defn -main
-  "Receives three parameters: Flickr URL name, start date and end date,
+  "Receives three parameters: API username, start date and end date,
   and retrieves all the pictures taken by the given user between the
   given dates."
   [& args]
@@ -41,7 +44,7 @@
     (binding [fc/*base-url* (:base-url options)
               fc/*static-domain* (:static-domain options)]
       (let [config (clojure.edn/read-string (slurp "config.edn"))
-            username (fc/user-id-from-url-name (first rest-args))
+            username (first rest-args)
             raw-date-from (second rest-args)
             rfc3339-formatter (SimpleDateFormat. "yyyy-MM-dd")
             reference-date (if (> (count rest-args) 1)
@@ -59,7 +62,7 @@
                                                                             photos))]
                 (if (> (count rest-args) 2)
                   (mail/send-mail (nth rest-args 2)
-                                  (str "Flickr memories for " date-from-string)
+                                  (str "Photo memories for " date-from-string)
                                   html-mail-text
                                   config)
                   (println html-mail-text)))
