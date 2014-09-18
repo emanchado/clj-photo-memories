@@ -1,5 +1,7 @@
 (ns clj-photo-memories.main
   (:require [clj-photo-memories.flickr-client :as fc])
+  (:require [clj-photo-memories.trovebox-client :as tc])
+  (:require [clj-photo-memories.service-protocol :as service])
   (:require [clj-photo-memories.mail :as mail])
   (:require [clj-photo-memories.date :refer [find-this-week-in-past-year]])
   (:require [clojure.edn :as edn])
@@ -53,7 +55,11 @@
                                                                  years-back)
               date-from-string (.format rfc3339-formatter week-start)
               date-to-string (.format rfc3339-formatter week-end)
-              photos (fc/search-photos username date-from-string date-to-string options)]
+              constructor (if (= (:type options) "flickr")
+                            fc/->FlickrClient
+                            tc/->TroveboxClient)
+              client (constructor options)
+              photos (service/search-photos client username date-from-string date-to-string)]
           (if (pos? (count photos))
             (let [html-mail-text (clojure.string/join (mail/mail-template date-from-string
                                                                           date-to-string

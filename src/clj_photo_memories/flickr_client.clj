@@ -1,8 +1,11 @@
 (ns clj-photo-memories.flickr-client
   (:require [clojure.zip :as zip]
             [clojure.xml :as xml]
-            [clj-http.client :as http-client])
+            [clj-http.client :as http-client]
+            [clj-photo-memories.service-protocol :as service-protocol])
   (:use clojure.contrib.zip-filter.xml))
+
+(defrecord FlickrClient [options])
 
 (def ^:dynamic *api-key* "30c195ccce757cd281132f0bef44de0d")
 (def ^:dynamic *base-url* "https://api.flickr.com/services/rest")
@@ -46,6 +49,25 @@
               :title (:title photo-attrs)
               :description (first (:content (first (filter #(= (:tag %) :description) (:content (first photo-zipped-xml))))))}))
          photo-list)))
+
+(extend-type FlickrClient service-protocol/ServiceClient
+             (search-photos [this username from-date to-date]
+               (try
+                 (let [options (:options this)
+                       base-url (if (nil? (:base-url options)) *base-url* (:base-url options))
+                       api-key (if (nil? (:api-key options)) *api-key* (:api-key options))
+                       user-id (user-id-from-url-name username)
+                       response (http-client/get base-url
+                                                 {:query-params {:method "flickr.photos.search"
+                                                                 :api_key api-key
+                                                                 :extras "description"
+                                                                 :user_id user-id
+                                                                 :min_taken_date from-date
+                                                                 :max_taken_date to-date}})]
+                   (photos-in-xml-result (:body response)))
+                 (catch Exception e
+                   (println (str "Couldn't get photos from the Flickr server for " from-date "-" to-date))
+                   ()))))
 
 (defn search-photos [username from-date to-date & [options]]
   (try
