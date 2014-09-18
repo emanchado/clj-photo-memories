@@ -10,14 +10,14 @@
 
 (def options
   [["-u" "--base-url URL" "Base URL for the server API"
-    :default "https://api.flickr.com/services/rest"
+    :default nil
     :assert [#(URL. %) "%s is not a valid URL"]
     ]
    ["-s" "--static-domain SUBDOMAIN" "Subdomain (after 'farm<N>') for image file URLs. Flickr-only."
-    :default "static.flickr.com"
+    :default nil
     ]
    ["-t" "--type TYPE" "Type of API (can be 'flickr' or 'trovebox')"
-    :default "static.flickr.com"
+    :default "flickr"
     ]])
 
 (defn parse-command-line [args]
@@ -41,31 +41,29 @@
   given dates."
   [& args]
   (let [[options rest-args] (parse-command-line args)]
-    (binding [fc/*base-url* (:base-url options)
-              fc/*static-domain* (:static-domain options)]
-      (let [config (clojure.edn/read-string (slurp "config.edn"))
-            username (first rest-args)
-            raw-date-from (second rest-args)
-            rfc3339-formatter (SimpleDateFormat. "yyyy-MM-dd")
-            reference-date (if (> (count rest-args) 1)
-                             (.parse rfc3339-formatter raw-date-from)
-                             (Date.))]
-        (loop [years-back 5]
-          (let [[week-start week-end] (find-this-week-in-past-year reference-date
-                                                                   years-back)
-                date-from-string (.format rfc3339-formatter week-start)
-                date-to-string (.format rfc3339-formatter week-end)
-                photos (fc/search-photos username date-from-string date-to-string)]
-            (if (pos? (count photos))
-              (let [html-mail-text (clojure.string/join (mail/mail-template date-from-string
-                                                                            date-to-string
-                                                                            photos))]
-                (if (> (count rest-args) 2)
-                  (mail/send-mail (nth rest-args 2)
-                                  (str "Photo memories for " date-from-string)
-                                  html-mail-text
-                                  config)
-                  (println html-mail-text)))
-              (if (> years-back 1)
-                (recur (dec years-back))
-                (println "Giving up, can't find anything this week :-(")))))))))
+    (let [config (clojure.edn/read-string (slurp "config.edn"))
+          username (first rest-args)
+          raw-date-from (second rest-args)
+          rfc3339-formatter (SimpleDateFormat. "yyyy-MM-dd")
+          reference-date (if (> (count rest-args) 1)
+                           (.parse rfc3339-formatter raw-date-from)
+                           (Date.))]
+      (loop [years-back 5]
+        (let [[week-start week-end] (find-this-week-in-past-year reference-date
+                                                                 years-back)
+              date-from-string (.format rfc3339-formatter week-start)
+              date-to-string (.format rfc3339-formatter week-end)
+              photos (fc/search-photos username date-from-string date-to-string options)]
+          (if (pos? (count photos))
+            (let [html-mail-text (clojure.string/join (mail/mail-template date-from-string
+                                                                          date-to-string
+                                                                          photos))]
+              (if (> (count rest-args) 2)
+                (mail/send-mail (nth rest-args 2)
+                                (str "Photo memories for " date-from-string)
+                                html-mail-text
+                                config)
+                (println html-mail-text)))
+            (if (> years-back 1)
+              (recur (dec years-back))
+              (println "Giving up, can't find anything this week :-("))))))))

@@ -47,11 +47,11 @@
               :description (first (:content (first (filter #(= (:tag %) :description) (:content (first photo-zipped-xml))))))}))
          photo-list)))
 
-(defn search-photos [username from-date to-date & {:keys [base-url api-key]
-                                                   :or {base-url *base-url*
-                                                        api-key *api-key*}}]
+(defn search-photos [username from-date to-date & [options]]
   (try
-    (let [user-id (user-id-from-url-name username)
+    (let [base-url (if (nil? (:base-url options)) *base-url* (:base-url options))
+          api-key (if (nil? (:api-key options)) *api-key* (:api-key options))
+          user-id (user-id-from-url-name username)
           response (http-client/get base-url
                                     {:query-params {:method "flickr.photos.search"
                                                     :api_key api-key
