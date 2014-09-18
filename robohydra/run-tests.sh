@@ -1,3 +1,3 @@
 #!/bin/sh
 
-nose2 -v -s robohydra/python-tests/
+nose2 -v -s robohydra/python-tests/ "$@"
