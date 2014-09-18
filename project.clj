@@ -8,5 +8,6 @@
                  [clj-http "0.7.7"]
                  [enlive "1.1.4"]
                  [javax.mail/mail "1.4.3"]
-                 [guns.cli/optparse "1.1.1"]]
+                 [guns.cli/optparse "1.1.1"]
+                 [org.clojure/data.json "0.2.5"]]
   :main clj-photo-memories.main)
