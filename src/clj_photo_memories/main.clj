@@ -27,6 +27,9 @@
     (let [[options remaining-args options-summary] (parse args options)]
       (when (or (> (count remaining-args) 3)
                 (< (count remaining-args) 1))
+        (println "ERROR: wrong number of parameters (should be from 1 to 3)")
+        (println "SYNTAX: lein run [options] <username> [<from-date> [<to-date>]]")
+        (println "Options:")
         (println options-summary)
         (System/exit 1))
       [options remaining-args])
