@@ -31,4 +31,3 @@ class FlickrTestCase(BaseApiTestCase):
         with flickr_scenario_output("olderYearsFirst",
                                     extra_params="2014-01-17") as output:
             self.assertEqual(len(self.get_photos(output)), 1)
-
