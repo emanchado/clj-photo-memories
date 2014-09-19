@@ -12,17 +12,22 @@ ROBOHYDRA_PROTOCOL = "http://"
 ROBOHYDRA_HOSTNAME = "localhost"
 ROBOHYDRA_PORT = "3001"
 ROBOHYDRA_BASE_URL = "%s:%s" % (ROBOHYDRA_HOSTNAME, ROBOHYDRA_PORT)
-ROBOHYDRA_FLICKR_USER = "foo"
-CFM_COMMAND = "lein run %s -u %s%s/services/rest -s %s/static %s" % (
-    ROBOHYDRA_FLICKR_USER,
+ROBOHYDRA_USER = "foo"
+CFM_COMMAND = "lein run %s -t %s -u %s%s/%s -s %s/static %s" % (
+    ROBOHYDRA_USER,
+    "%s",
     ROBOHYDRA_PROTOCOL,
     ROBOHYDRA_BASE_URL,
+    "%s",
     ROBOHYDRA_BASE_URL,
     "%s")
 
 
 class scenario_output(object):
-    def __init__(self, plugin_name, scenario_name, extra_params=""):
+    def __init__(self, service_type, base_url, plugin_name, scenario_name,
+                 extra_params=""):
+        self.service_type = service_type
+        self.base_url = base_url
         self.plugin_name = plugin_name
         self.scenario_name = scenario_name
         self.extra_params = extra_params
@@ -40,7 +45,9 @@ class scenario_output(object):
                 "Could not start scenario %s in plugin %s, response was %s" % (
                     self.scenario_name, self.plugin_name, resp))
 
-        return subprocess.check_output(CFM_COMMAND % self.extra_params,
+        return subprocess.check_output(CFM_COMMAND % (self.service_type,
+                                                      self.base_url,
+                                                      self.extra_params),
                                        shell=True)
 
     def __exit__(self, type, value, traceback):
@@ -53,12 +60,7 @@ class scenario_output(object):
                     self.scenario_name, self.plugin_name, resp))
 
 
-def get_photos(xml):
-    soup = BeautifulSoup(xml)
-    return soup.findAll("div", "photo")
-
-
-class SimpleTestCase(unittest.TestCase):
+class BaseApiTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.pid = os.fork()
@@ -71,7 +73,7 @@ class SimpleTestCase(unittest.TestCase):
             os.dup2(dev_null_w.fileno(), sys.stderr.fileno())
             os.dup2(dev_null_r.fileno(), sys.stdin.fileno())
             os.execl(ROBOHYDRA_COMMAND, "robohydra", "-p", ROBOHYDRA_PORT,
-                     "robohydra/flickr-api.conf")
+                     "robohydra/mock-apis.conf")
         else:
             # Wait for RoboHydra to start (up to 5 seconds)
             h = httplib2.Http()
@@ -92,23 +94,7 @@ class SimpleTestCase(unittest.TestCase):
     def tearDownClass(cls):
         os.kill(cls.pid, 15)
 
-    def test_oneSearchResult(self):
-        with scenario_output("flickr-api", "oneSearchResult") as output:
-            self.assertEqual(len(get_photos(output)), 1)
+    def get_photos(self, html):
+        soup = BeautifulSoup(html)
+        return soup.findAll("div", "photo")
 
-    def test_resultsFiveYearsAgo(self):
-        with scenario_output("flickr-api", "resultsFiveYearsAgo") as output:
-            self.assertEqual(len(get_photos(output)), 2)
-
-    def test_tryAtMostFiveTimes(self):
-        with scenario_output("flickr-api", "tryAtMostFiveTimes") as output:
-            self.assertEqual(len(get_photos(output)), 0)
-
-    def test_errorInTheMiddle(self):
-        with scenario_output("flickr-api", "errorInTheMiddle") as output:
-            self.assertEqual(len(get_photos(output)), 2)
-
-    def test_olderYearsFirst(self):
-        with scenario_output("flickr-api", "olderYearsFirst",
-                             extra_params="2014-01-17") as output:
-            self.assertEqual(len(get_photos(output)), 1)
