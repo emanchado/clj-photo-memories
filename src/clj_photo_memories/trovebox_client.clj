@@ -24,7 +24,7 @@
              (search-photos [this username from-date to-date]
                (try
                  (let [base-url (:base-url (:options this))
-                       response (http-client/get base-url
+                       response (http-client/get (str base-url "/photos/list.json")
                                                  {:query-params {:returnSizes "500x300"
                                                                  :takenBefore to-date
                                                                  :takenAfter from-date}})]
