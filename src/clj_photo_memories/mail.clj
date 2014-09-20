@@ -14,7 +14,7 @@
                                [:a] (html/set-attr :href (:url photo))
                                [:img] (html/set-attr :alt (:title photo)
                                                      :src (:thumbnail-url photo))
-                               [:div.description :em] (html/html-content (:description photo))))
+                               [:div.description :em] (html/content (:description photo))))
 
 
 ; Stolen from http://nakkaya.com/2009/11/10/using-java-mail-api-from-clojure/
