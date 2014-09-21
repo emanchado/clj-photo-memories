@@ -30,13 +30,11 @@
         </photo>
 </photos>
 </rsp>"))]
-      (is (= (:id photo-info) "4231276405"))
-      (is (= (:secret photo-info) "468409240f"))
-      (is (= (:owner photo-info) "24881879@N00"))
-      (is (= (:farm-id photo-info) "5"))
-      (is (= (:server-id photo-info) "4007"))
-      (is (= (:title photo-info) "IMG_3407.JPG"))
-      (is (= (:description photo-info) "Sand sculpture of John Lennon")))))
+      (is (= photo-info {:id "4231276405",
+                         :title "IMG_3407.JPG"
+                         :description "Sand sculpture of John Lennon"
+                         :page-url "http://www.flickr.com/photos/24881879@N00/4231276405"
+                         :thumbnail-url "http://farm5.static.flickr.com/4007/4231276405_468409240f.jpg"})))))
 
 
 (deftest extract-information-from-user-info-results
@@ -57,21 +55,9 @@
 
 (deftest photo-url-utilities
   (testing "Can re-create an image URL from a photo information map"
-    (is (= (photo-image-url {:farm-id "9"
-                             :server-id "8404"
-                             :id "8603065596"
-                             :secret "1e940ccd43"
-                             :owner "24881879@N00"
-                             :title "foo"
-                             :description "Foo"})
+    (is (= (photo-image-url "8603065596" "1e940ccd43" "9" "8404")
            "http://farm9.static.flickr.com/8404/8603065596_1e940ccd43.jpg")))
 
   (testing "Can re-create a page URL from a photo information map"
-    (is (= (photo-page-url {:farm-id "9"
-                            :server-id "8404"
-                            :id "8603065596"
-                            :secret "1e940ccd43"
-                            :owner "24881879@N00"
-                            :title "foo"
-                            :description "Foo"})
+    (is (= (photo-page-url "8603065596" "24881879@N00")
            "http://www.flickr.com/photos/24881879@N00/8603065596"))))

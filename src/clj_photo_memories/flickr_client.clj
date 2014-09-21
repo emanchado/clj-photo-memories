@@ -11,13 +11,12 @@
 (def ^:dynamic *base-url* "https://api.flickr.com/services/rest")
 (def ^:dynamic *static-domain* "static.flickr.com")
 
-(defn photo-image-url [photo]
-  (str "http://farm" (:farm-id photo) "." *static-domain* "/"
-       (:server-id photo) "/"
-       (:id photo) "_" (:secret photo) ".jpg"))
+(defn photo-image-url [id secret farm-id server-id]
+  (str "http://farm" farm-id "." *static-domain* "/"
+       server-id "/" id "_" secret ".jpg"))
 
-(defn photo-page-url [photo]
-  (str "http://www.flickr.com/photos/" (:owner photo) "/" (:id photo)))
+(defn photo-page-url [id owner]
+  (str "http://www.flickr.com/photos/" owner "/" id))
 
 (defn user-id-from-xml-result [xml]
   (let [java-stream (java.io.ByteArrayInputStream. (.getBytes xml))
@@ -48,17 +47,16 @@
         zipped-xml (zip/xml-zip (xml/parse java-stream))
         photo-list (xml-> zipped-xml :photos :photo)]
     (map (fn [photo-zipped-xml]
-           (let [photo-attrs (:attrs (first photo-zipped-xml))
-                 basic-photo {:id (:id photo-attrs)
-                              :secret (:secret photo-attrs)
-                              :owner (:owner photo-attrs)
-                              :farm-id (:farm photo-attrs)
-                              :server-id (:server photo-attrs)
-                              :title (:title photo-attrs)
-                              :description (first (:content (first (filter #(= (:tag %) :description) (:content (first photo-zipped-xml))))))}]
-             (merge basic-photo
-                    {:url (photo-page-url basic-photo)
-                     :thumbnail-url (photo-image-url basic-photo)})))
+           (let [photo-attrs (:attrs (first photo-zipped-xml))]
+             {:id (:id photo-attrs)
+              :title (:title photo-attrs)
+              :description (first (:content (first (filter #(= (:tag %) :description) (:content (first photo-zipped-xml))))))
+              :page-url (photo-page-url (:id photo-attrs)
+                                        (:owner photo-attrs))
+              :thumbnail-url (photo-image-url (:id photo-attrs)
+                                              (:secret photo-attrs)
+                                              (:farm photo-attrs)
+                                              (:server photo-attrs))}))
          photo-list)))
 
 (extend-type FlickrClient service-protocol/ServiceClient

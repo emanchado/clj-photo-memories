@@ -11,7 +11,7 @@
   [:h1 :#date-to] (html/content date-to)
   [:h1 :#year-from] (html/content date-from)
   [:div.photo] (html/clone-for [photo photos]
-                               [:a] (html/set-attr :href (:url photo))
+                               [:a] (html/set-attr :href (:page-url photo))
                                [:img] (html/set-attr :alt (:title photo)
                                                      :src (:thumbnail-url photo))
                                [:div.description :em] (html/content (:description photo))))
