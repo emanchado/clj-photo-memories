@@ -1,9 +1,15 @@
-var heads               = require("robohydra").heads,
-    RoboHydraHeadStatic = heads.RoboHydraHeadStatic;
+var heads                   = require("robohydra").heads,
+    RoboHydraHeadStatic     = heads.RoboHydraHeadStatic,
+    RoboHydraHeadFilesystem = heads.RoboHydraHeadFilesystem;
 
 exports.getBodyParts = function() {
     return {
-        heads: [],
+        heads: [
+            new RoboHydraHeadFilesystem({
+                mountPath: '/photos',
+                documentRoot: 'robohydra/static/photos'
+            })
+        ],
 
         scenarios: {
             oneSearchResult: {
@@ -48,11 +54,11 @@ exports.getBodyParts = function() {
                                  "longitude": null,
                                  "owner": "blah@example.com",
                                  "pageSize": 30,
-                                 "path500x300": "https://photos.example.com/photos/custom/201409/IMAG0812_BURST002-67d096_500x300.jpg",
-                                 "pathBase": "https://photos.example.com/photos/base/201409/IMAG0812_BURST002-67d096.jpg",
+                                 "path500x300": "http://localhost:3000/photos/custom/201409/IMAG0812_BURST002-67d096_500x300.jpg",
+                                 "pathBase": "http://localhost:3000/photos/base/201409/IMAG0812_BURST002-67d096.jpg",
                                  "permission": "1",
                                  "photo500x300": [
-                                     "https://photos.example.com/photos/custom/201409/IMAG0812_BURST002-67d096_500x300.jpg",
+                                     "http://localhost:3000/photos/custom/201409/IMAG0812_BURST002-67d096_500x300.jpg",
                                      500,
                                      281
                                  ],
