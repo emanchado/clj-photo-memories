@@ -9,7 +9,6 @@
                                     " to " date-to))
   [:h1 :#date-from] (html/content date-from)
   [:h1 :#date-to] (html/content date-to)
-  [:h1 :#year-from] (html/content date-from)
   [:div.photo] (html/clone-for [photo photos]
                                [:a] (html/set-attr :href (:page-url photo))
                                [:img] (html/set-attr :alt (:title photo)
