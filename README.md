@@ -22,6 +22,8 @@ You can call clj-photo-memories from inside the repo directory like:
     lein run <username>
     lein run <username> <reference-date>
     lein run <username> <reference-date> <email-address>
+    lein run -t trovebox <username> <reference-date>
+    lein run -y 10 <username> <reference-date> <email-address>
 
 The username is, in the case of Flickr, the URL bit after
 `http://flickr.com/photos/` in your photo stream URL. In the case of
@@ -33,12 +35,16 @@ The reference date is an optional date in the format YYYY-MM-DD
 to send the list of photos to. If the latter is not given, the HTML
 will be printed on the standard output.
 
-clj-photo-memories will then jump back in time five years from the
-reference date and start approaching the current date one year at a
-time. For every step it will calculate the week (starting on Monday!)
-containing the pivot date (ie. reference date five years ago;
-reference date four years ago, etc.) and checking if there are any
-images taken that week. If it finds anything, it will output a web
+The options -t and -y specify the type of API (`flickr` by default,
+but can be `trovebox` too) and the number of years to go back in time
+(5 by default).
+
+clj-photo-memories will then jump back in time five years (by default)
+from the reference date and start approaching the current date one
+year at a time. For every step it will calculate the week (starting on
+Monday!) containing the pivot date (ie. reference date five years
+ago; reference date four years ago, etc.) and checking if there are
+any images taken that week. If it finds anything, it will output a web
 page with the results. If not, it will jump forward one more year
 until it finds images or until it reaches the current date.
 

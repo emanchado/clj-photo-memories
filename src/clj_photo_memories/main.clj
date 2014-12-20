@@ -20,6 +20,10 @@
     ]
    ["-t" "--type TYPE" "Type of API (can be 'flickr' or 'trovebox')"
     :default "flickr"
+    ]
+   ["-y" "--years YEARS" "Number of years to go back"
+    :parse-fn #(Integer/parseInt %)
+    :default 5
     ]])
 
 (defn parse-command-line [args]
@@ -28,7 +32,7 @@
       (when (or (> (count remaining-args) 3)
                 (< (count remaining-args) 1))
         (println "ERROR: wrong number of parameters (should be from 1 to 3)")
-        (println "SYNTAX: lein run [options] <username> [<from-date> [<to-date>]]")
+        (println "SYNTAX: lein run [options] <username> [<from-date> [<email>]]")
         (println "Options:")
         (println options-summary)
         (System/exit 1))
@@ -53,7 +57,7 @@
           reference-date (if (> (count rest-args) 1)
                            (.parse rfc3339-formatter raw-date-from)
                            (Date.))]
-      (loop [years-back 5]
+      (loop [years-back (:years options)]
         (let [[week-start week-end] (find-this-week-in-past-year reference-date
                                                                  years-back)
               date-from-string (.format rfc3339-formatter week-start)

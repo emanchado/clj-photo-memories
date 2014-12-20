@@ -13,14 +13,11 @@ ROBOHYDRA_HOSTNAME = "localhost"
 ROBOHYDRA_PORT = "3001"
 ROBOHYDRA_BASE_URL = "%s:%s" % (ROBOHYDRA_HOSTNAME, ROBOHYDRA_PORT)
 ROBOHYDRA_USER = "foo"
-CFM_COMMAND = "lein run %s -t %s -u %s%s/%s -s %s/static %s" % (
+CFM_COMMAND = "lein run %s -t %%s -u %s%s/%%s -s %s/static %%s" % (
     ROBOHYDRA_USER,
-    "%s",
     ROBOHYDRA_PROTOCOL,
     ROBOHYDRA_BASE_URL,
-    "%s",
-    ROBOHYDRA_BASE_URL,
-    "%s")
+    ROBOHYDRA_BASE_URL)
 
 
 class scenario_output(object):

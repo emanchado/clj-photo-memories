@@ -1,8 +1,12 @@
 var heads                   = require("robohydra").heads,
+    RoboHydraHead           = heads.RoboHydraHead,
     RoboHydraHeadStatic     = heads.RoboHydraHeadStatic,
     RoboHydraHeadFilesystem = heads.RoboHydraHeadFilesystem;
 
-exports.getBodyParts = function() {
+exports.getBodyParts = function(conf, modules) {
+    var assert   = modules.assert,
+        fixtures = modules.fixtures;
+
     return {
         heads: [
             new RoboHydraHeadFilesystem({
@@ -16,66 +20,24 @@ exports.getBodyParts = function() {
                 heads: [
                     new RoboHydraHeadStatic({
                         path: '/photos/list.json',
-                        content: {
-                            "code": 200,
-                            "message": "Successfully retrieved user's photos",
-                            "result": [
-                                {"active": "1",
-                                 "actor": "blah@example.com",
-                                 "albums": [],
-                                 "appId": "openphoto-frontend",
-                                 "currentPage": 1,
-                                 "currentRows": 1,
-                                 "dateSortByDay": "20140906101046",
-                                 "dateTaken": "1410036553",
-                                 "dateTakenDay": "6",
-                                 "dateTakenMonth": "9",
-                                 "dateTakenYear": "2014",
-                                 "dateUploaded": "1410956185",
-                                 "dateUploadedDay": "17",
-                                 "dateUploadedMonth": "9",
-                                 "dateUploadedYear": "2014",
-                                 "description": "",
-                                 "exifCameraMake": "HTC",
-                                 "exifCameraModel": "HTC One S",
-                                 "exifExposureTime": "10008/1000000",
-                                 "exifFNumber": "",
-                                 "exifFocalLength": "3.63",
-                                 "exifISOSpeed": "185",
-                                 "filenameOriginal": "IMAG0812_BURST002.jpg",
-                                 "groups": "",
-                                 "hash": "fdefa3f0e03afbb4b9443c0eab1947bb041c06ce",
-                                 "height": "1840",
-                                 "host": "photos.example.com/photos",
-                                 "id": "1",
-                                 "key": null,
-                                 "latitude": null,
-                                 "license": "",
-                                 "longitude": null,
-                                 "owner": "blah@example.com",
-                                 "pageSize": 30,
-                                 "path500x300": "http://localhost:3000/photos/custom/201409/IMAG0812_BURST002-67d096_500x300.jpg",
-                                 "pathBase": "http://localhost:3000/photos/base/201409/IMAG0812_BURST002-67d096.jpg",
-                                 "permission": "1",
-                                 "photo500x300": [
-                                     "http://localhost:3000/photos/custom/201409/IMAG0812_BURST002-67d096_500x300.jpg",
-                                     500,
-                                     281
-                                 ],
-                                 "rotation": "0",
-                                 "size": "2081",
-                                 "status": "1",
-                                 "tags": [
-                                     "2014",
-                                     "September"
-                                 ],
-                                 "title": "",
-                                 "totalPages": 1,
-                                 "totalRows": 1,
-                                 "url": "https://photos.example.com/p/1",
-                                 "views": "0",
-                                 "width": "3264"}
-                            ]
+                        content: fixtures.load('simple-result.json').toString()
+                    })
+                ]
+            },
+
+            canGoBackTenYears: {
+                heads: [
+                    new RoboHydraHead({
+                        path: '/photos/list.json',
+                        handler: function(req, res) {
+                            var takenBefore = req.queryParams.takenBefore,
+                                takenAfter  = req.queryParams.takenAfter;
+                            if (takenBefore.indexOf("2012") === -1 ||
+                                takenAfter.indexOf("2012") === -1) {
+                                res.send(fixtures.load('no-results.json'));
+                            } else {
+                                res.send(fixtures.load('simple-result.json'));
+                            }
                         }
                     })
                 ]
