@@ -29,7 +29,6 @@
     (if (= (:ssl mail-opts) true)
       (doto props
         (.put "mail.smtp.starttls.enable" "true")
-        (.put "mail.smtp.socketFactory.class" "javax.net.ssl.SSLSocketFactory")
         (.put "mail.smtp.socketFactory.fallback" "false")))
 
     (let [authenticator (proxy [javax.mail.Authenticator] []
