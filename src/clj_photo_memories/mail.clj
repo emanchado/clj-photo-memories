@@ -1,5 +1,6 @@
 (ns clj-photo-memories.mail
-  (:require [net.cgrand.enlive-html :as html]))
+  (:require [net.cgrand.enlive-html :as html])
+  (:import java.util.Date))
 
 
 (html/deftemplate mail-template "templates/mail.html"
@@ -46,4 +47,5 @@
 
       (.setSubject msg subject)
       (.setContent msg body "text/html; charset=\"utf-8\"")
+      (.setSentDate msg (Date.))
       (javax.mail.Transport/send msg))))
